@@ -1,5 +1,9 @@
 include FactoryBot::Syntax::Methods
 
+ActiveRecord::Base.connection.tables.each do |t|
+  ActiveRecord::Base.connection.reset_pk_sequence!(t)
+end
+
 OrderItem.destroy_all
 Order.destroy_all
 Item.destroy_all
