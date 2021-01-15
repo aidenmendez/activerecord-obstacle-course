@@ -13,11 +13,10 @@ describe 'ActiveRecord Obstacle Course, Week 4' do
 
   it '21. calculates the total sales' do
     # ---------------------- Using Ruby -------------------------
-    total_sales = Order.all.map(&:amount).inject(:+)
+    # total_sales = Order.all.map(&:amount).inject(:+)
     # -----------------------------------------------------------
-
     # ------------------ Using ActiveRecord ---------------------
-    # Solution goes here
+      total_sales = Order.sum(:amount)
     # -----------------------------------------------------------
 
     # Expectation
@@ -26,14 +25,14 @@ describe 'ActiveRecord Obstacle Course, Week 4' do
 
   it '22. calculates the total sales for all but one user' do
     # ---------------------- Using Ruby -------------------------
-    orders = Order.all.map do |order|
-      order if order.user_id != @user_2.id
-    end.select{|i| !i.nil?}
-    total_sales = orders.map(&:amount).inject(:+)
+    # orders = Order.all.map do |order|
+    #   order if order.user_id != @user_2.id
+    # end.select{|i| !i.nil?}
+    # total_sales = orders.map(&:amount).inject(:+)
     # -----------------------------------------------------------
 
     # ------------------ Using ActiveRecord ---------------------
-    # Solution goes here
+      total_sales = Order.joins(:user).where.not(user_id: @user_2.id).sum(:amount)
     # -----------------------------------------------------------
 
     # Expectation
@@ -49,7 +48,7 @@ describe 'ActiveRecord Obstacle Course, Week 4' do
     # -----------------------------------------------------------
 
     # ------------------ Improved Solution ----------------------
-    #  Solution goes here
+    orders = Order.joins(:items).where(items: {id: @item_4.id})
     # -----------------------------------------------------------
 
     # Expectation
@@ -78,17 +77,17 @@ describe 'ActiveRecord Obstacle Course, Week 4' do
     expected_result = [@item_1, @item_4, @item_9, @item_2, @item_5, @item_10, @item_3, @item_8, @item_7]
 
     # ----------------------- Using Ruby -------------------------
-    items = Item.all
+    # items = Item.all
 
-    ordered_items = items.map do |item|
-      item if item.orders.present?
-    end
+    # ordered_items = items.map do |item|
+    #   item if item.orders.present?
+    # end
 
-    ordered_items = ordered_items.compact
+    # ordered_items = ordered_items.compact
     # ------------------------------------------------------------
 
     # ------------------ ActiveRecord Solution ----------------------
-    # Solution goes here
+      ordered_items = Item.joins(:orders).distinct
     # ---------------------------------------------------------------
 
     # Expectations
